@@ -1,0 +1,54 @@
+<aura:component controller="genericCSVGeneratorCtrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="ObjectType" type="List"/>  
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    <aura:attribute name="displayAfterSelect" type="boolean" default="false"/>
+    <aura:attribute name="resData" type="object"/>
+    <aura:attribute name="headerColumns" type="List"/>
+    <aura:attribute name="headerforCSV" type="List"/>
+    <aura:attribute name="selectedObjectName" type="String"/>
+    <aura:attribute name="disableBtn" type="boolean" default="true"/>
+    <!--loading spinner start-->
+    <aura:if isTrue="{!v.spinner}">
+        <lightning:spinner alternativeText="Loading" size="medium"/><br/>
+    </aura:if>
+    
+    <div class="slds-p-around_xx-small" style="width:100%;height:480px;background-color:white;border-radius: .25rem;" >
+        <div style="margin-top:1%;margin-bottom:1%;font-size:12px">
+            <ul class="slds-list_dotted" style="list-style: disc;color: red">
+                <li>Selection of Object available in org</li>
+                <li>Display of Records with Dynamic Field Names as Headers in Lightning Data Table respective to the selected object.</li>
+                <li>Display of Toast message accordingly if any errors occurs for object that cannot perform query.</li>
+                <li>Display of Toast Message if no records available under the selected object.</li>
+                <li>Download the results into CSV format.</li>
+            </ul>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-form-element slds-size_4-of-12">
+                <lightning:select label="Select an Object" onchange="{!c.getData}" aura:id="pickedobjValue">
+                    <aura:iteration items="{!v.ObjectType}" var="obj">
+                        <option text="{!obj}">
+                        </option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div class="slds-col slds-form-element slds-size_4-of-12">
+                
+            </div>
+            <div class="slds-col slds-form-element slds-size_4-of-12">
+                <div align="right" style="margin-top: 3%;">
+                    <lightning:buttonIcon class= "clearBtn" iconName="utility:loop" variant="bare" onclick="{!c.clearData}" alternativeText="Clear" title="Clear" />
+                    <lightning:button variant="brand" label="Download as CSV" iconName="utility:download" onclick="{!c.downloadAsCSV}" disabled="{!v.disableBtn}"/>
+                </div>
+            </div>
+        </div>
+        <aura:if isTrue="{!v.displayAfterSelect}">
+            <div style="margin-top:3%;height: 250px;width:100% !important">
+                <lightning:datatable data="{! v.resData}"
+                                     columns="{!v.headerColumns}"
+                                     keyField="id"
+                                     hideCheckboxColumn="true"/>
+            </div>
+        </aura:if>
+    </div>
+</aura:component>
